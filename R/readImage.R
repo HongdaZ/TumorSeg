@@ -62,10 +62,10 @@ readImage <- function( patient_file ) {
     for( i in 1 : 7 ) {
         shift[ , i + 1 ] <- i * 5 + 1
     }
-    pb <- tkProgressBar( "readImage", "Analyzing data",
-                         0, 100, 0, width = 600 )
-    step <- last / 100
-    n_step <- 1
+    # pb <- tkProgressBar( "readImage", "Analyzing data",
+    #                      0, 100, 0, width = 600 )
+    # step <- last / 100
+    # n_step <- 1
 
     for( i in 1 : last ) {
         # pairwise neighbor
@@ -97,15 +97,15 @@ readImage <- function( patient_file ) {
 
             modality_mat[ j, i ] <- res
         }
-        if( i > ( n_step * step ) ) {
-            info <- sprintf( "Analyzing data: %d%%",
-                             n_step )
-            setTkProgressBar( pb, info, "readImage", info )
-            n_step <- n_step + 1
-        }
+        # if( i > ( n_step * step ) ) {
+        #     info <- sprintf( "Analyzing data: %d%%",
+        #                      n_step )
+        #     setTkProgressBar( pb, info, "readImage", info )
+        #     n_step <- n_step + 1
+        # }
 
     }
-    close( pb )
+    # close( pb )
 
     list( sum_cross_y = sum_cross_y,
           sum_y = sum_y,
