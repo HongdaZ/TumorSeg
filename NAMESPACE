@@ -1,1 +1,7 @@
+useDynLib( TumorSeg )
 exportPattern("^[[:alpha:]]+")
+
+#importFrom(): import selected functions (including S4 generics).
+importFrom( "RNifti", "readNifti" )
+importFrom( "tcltk", "tkProgressBar", "setTkProgressBar" )
+importFrom( "arrayhelpers", "vec2array" )
