@@ -1,2 +1,2 @@
-TumorSeg.so
-inplaceMS.o
+*.so
+*.o
