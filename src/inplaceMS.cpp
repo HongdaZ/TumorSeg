@@ -11,7 +11,7 @@ extern "C" {
         double *L = REAL( A ), *R = REAL( B );
         for( i = 0; i != last ; ++ i ) {
 
-                L[ i ] += R[ i ];
+            L[ i ] += R[ i ];
         }
         return A;
     }
