@@ -1,20 +1,15 @@
-readImage <- function( patient_file ) {
-    img_dim <- c( 240, 240, 155 )
-    type <- label
+readImage <- function( patient_file, type ) {
+    seg_array <- readNifti( patient_file[[ 2 ]] )
+    img_dim <- dim( seg_array )
     pairwise_clique <- pairwise
     higher_index <- higher_order_index
     G <- prod( img_dim )
     # "flair", "t1", "t1ce", "t2"
     modality_mat <- matrix( nrow =  G, ncol = 4 )
-    for( i in 1 : 4 ) {
-        if( i > 1 ) {
-            list_index <- i + 1
-        } else {
-            list_index <- i
-        }
-        modality_mat[ , i ] <- readNifti( patient_file[[ list_index ]] )
+    modality_mat[ , 1 ] <- readNifti( patient_file[[ 1 ]] )
+    for( i in 2 : 4 ) {
+        modality_mat[ , i ] <- readNifti( patient_file[[ i + 1 ]] )
     }
-    seg_array <- readNifti( patient_file[[ 2 ]] )
     nonzero <- rep( TRUE, G )
     for ( i in 1 : 4 ) {
         nonzero <- nonzero & ( modality_mat[ , i ] != 0 )
