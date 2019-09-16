@@ -1,5 +1,7 @@
 readImage <- function( patient_file, type ) {
     seg_array <- readNifti( patient_file[[ 2 ]] )
+    # change label to 1 ~ # of type
+    changeLabel( seg_array, type )
     img_dim <- dim( seg_array )
     pairwise_clique <- pairwise
     higher_index <- higher_order_index
@@ -19,43 +21,36 @@ readImage <- function( patient_file, type ) {
     seg_valid <- seg_array[ nonzero ]
     seg_array[ !nonzero ] <- NA
     # sum of cross products of y's and sum of y's
-    sum_cross_y <- vector( "list", 4 )
-    sum_y <- vector( "list", 4 )
-    n_type <- tabulate( seg_valid + 1, nbins = 5 )[ -4 ]
-    for( i in 1 : 4 ) {
-        index <- seg_valid == type[ i ]
+    len_type <- length( type )
+    sum_cross_y <- vector( "list", len_type )
+    sum_y <- vector( "list", len_type )
+    n_type <- tabulate( seg_valid, nbins = len_type )
+    for( i in 1 : len_type ) {
+        index <- seg_valid == i
         y <- modality_mat[ index, ]
         sum_cross_y[[ i ]] <- crossprod( y )
         sum_y[[ i ]] <- colSums( y )
     }
     # neighborhood informations
     vec_index <- which( nonzero == TRUE )
-    # reshape modality_mat to be of 4 rows
-    dim( modality_mat ) <- c( 4, length( vec_index ) )
-
+    modality_mat <- matrix( nrow = len_type, ncol = length( vec_index ) )
     matrix_index <- vec2array( vec_index, dim = img_dim )
     last <- length( vec_index )
     up_mat <- matrix( rep( img_dim, dim( pairwise_clique )[ 2 ] ), nrow = 3 )
     valid_pos <- vector( "integer", dim( up_mat )[ 2 ] )
 
-    five_base <- matrix( 1, nrow = 5, ncol = 8 )
+    five_base <- matrix( 1, nrow = len_type, ncol = 8 )
     ten_base <- vector( "numeric", 26 )
-    for( i in 1 : 6 ) {
-        ten_base[ i ] <- 10 ^ 7
-    }
-    for( i in 7 : 18 ) {
-        ten_base[ i ] <- 10 ^ 8
-    }
-    for( i in 19 : 26 ) {
-        ten_base[ i ] <- 10 ^ 6
-    }
+    ten_base[ 1 : 6 ] <- 10 ^ 7
+    ten_base[ 7 : 18 ] <- 10 ^ 8
+    ten_base[ 19 : 26 ] <- 10 ^ 6
     for( i in 1 : 7 ) {
         five_base[ , i ] <- 5 ^ ( 8 - i )
     }
-    type_count <- matrix( nrow = 5, ncol = 8 )
-    shift <- matrix( 1, nrow = 7, ncol = 8 )
+    type_count <- matrix( nrow = len_type, ncol = 8 )
+    shift <- matrix( 0, nrow = 7, ncol = 8 )
     for( i in 1 : 7 ) {
-        shift[ , i + 1 ] <- i * 5 + 1
+        shift[ , i + 1 ] <- i * len_type
     }
     # pb <- tkProgressBar( "readImage", "Analyzing data",
     #                      0, 100, 0, width = 600 )
@@ -77,17 +72,17 @@ readImage <- function( patient_file, type ) {
         # 8th order neighbor
         higher_seg <- pairwise_seg[ higher_index ]
 
-        type_count <- tabulate( higher_seg + shift, 40 )
-        dim( type_count ) <- c( 5, 8 )
+        type_count <- tabulate( higher_seg + shift, 8 * len_type )
+        dim( type_count ) <- c( len_type, 8 )
         type_count <- type_count != 0
 
-        for( j in 1 : 4 ) {
+        for( j in 1 : len_type ) {
             # pairwise
-            unequal_label <- pairwise_seg != type[ j ]
+            unequal_label <- pairwise_seg != j
             res <- sum( unequal_label * ten_base, na.rm = T )
             # number of distinct cell types in a higher-order clique
             type_count2 <- type_count
-            type_count2[ type[ j ] + 1, ] <- T
+            type_count2[ j, ] <- T
             res <- res + sum( type_count2 * five_base )
 
             modality_mat[ j, i ] <- res
@@ -102,8 +97,9 @@ readImage <- function( patient_file, type ) {
     }
     # close( pb )
 
+    storage.mode( modality_mat ) <- "integer"
     list( sum_cross_y = sum_cross_y,
           sum_y = sum_y,
           n_type = n_type,
-          neighbor_info = as.integer( modality_mat ) )
+          neighbor_info = modality_mat )
 }
