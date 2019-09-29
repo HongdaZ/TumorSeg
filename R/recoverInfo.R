@@ -1,3 +1,3 @@
-recoverInfo <-function( A, B, C ) {
-    .Call( "recoverInfo", A, B, C )
+recoverInfo <-function( A, B, C, P ) {
+    .Call( "recoverInfo", A, B, C, P )
 }
