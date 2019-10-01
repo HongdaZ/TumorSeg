@@ -2,26 +2,46 @@
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <omp.h>
-extern "C" {
-    SEXP recoverInfo( SEXP A, SEXP B, SEXP C,SEXP P ) {
 
-        int n_a = length( A );
-        int *vec_A = INTEGER( A );
-        int *vec_B = INTEGER( B );
-        int *vec_C = INTEGER( C );
+extern "C" {
+    SEXP recoverInfo( SEXP A, SEXP P ) {
+        int nra, nca;
+        SEXP Adim, B;
+
+        Adim = getAttrib( A, R_DimSymbol );
+        nra = INTEGER( Adim )[ 0 ];
+        nca = INTEGER( Adim )[ 1 ];
+        B = PROTECT( allocMatrix( INTSXP, nra * 11, nca ) );
+
+        int *mat_A = INTEGER( A );
+        int *mat_B = INTEGER( B );
         double *p = REAL( P );
         int n = p[ 0 ];
+        div_t divresult;
+        int rem;
 #pragma omp parallel for num_threads( n ) default( none ) \
-        firstprivate(n_a, vec_A, vec_B, vec_C)
-        for( int i = 0; i < n_a; ++ i ) {
-            div_t divresult;
-            for( int j = 0; j < 1000; ++ j ) {
-                divresult = div( vec_A[ i ], 10 );
-                vec_B[ i ] = divresult.quot;
-                vec_C[ i ] = divresult.rem;
-            }
+        private( divresult, rem )                   \
+        firstprivate( nra, nca, mat_A, mat_B )
+            for( int i = 0; i < nca; ++ i ) {
+                for( int j = 0; j < nra; ++ j ) {
+                    int index = nra * i + j;
+                    divresult = div( mat_A[ index ], pow( 10, 8 ) );
+                    mat_B[ 11 * index + 1 ] = divresult.quot;
+                    rem = divresult.rem;
+                    divresult = div( rem, pow( 10, 7 ) );
+                    mat_B[ 11 * index ] = divresult.quot;
+                    rem = divresult.rem;
+                    divresult = div( rem, pow( 10, 6 ) );
+                    mat_B[ 11 * index + 2 ] = divresult.quot;
 
-        }
-        return R_NilValue;
+                    for( int k = 0; k < 8; ++ k ) {
+                        rem = divresult.rem;
+                        divresult = div( rem, pow( 5 , 7 - k ) );
+                        mat_B[ 11 * index + 3 + k ] = divresult.quot;
+                    }
+                }
+            }
+        UNPROTECT( 1 );
+        return B;
     }
 } // extern "C"
