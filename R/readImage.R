@@ -1,4 +1,5 @@
-readImage <- function( patient_file, type ) {
+readImage <- function( patient_file ) {
+    type <- c( 0, 1, 2, 4 )
     seg_array <- readNifti( patient_file[[ 2 ]] )
     # change label to 1 ~ # of type
     changeLabel( seg_array, type )
