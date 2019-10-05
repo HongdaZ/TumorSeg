@@ -11,7 +11,7 @@ extern "C" {
         Adim = getAttrib( A, R_DimSymbol );
         nra = INTEGER( Adim )[ 0 ];
         nca = INTEGER( Adim )[ 1 ];
-        B = PROTECT( allocMatrix( INTSXP, nra * 11, nca ) );
+        B = PROTECT( allocMatrix( INTSXP, nra * 4, nca ) );
 
         int *mat_A = INTEGER( A );
         int *mat_B = INTEGER( B );
@@ -26,18 +26,20 @@ extern "C" {
                 for( int j = 0; j < nra; ++ j ) {
                     int index = nra * i + j;
                     divresult = div( mat_A[ index ], pow( 10, 8 ) );
-                    mat_B[ 11 * index + 1 ] = divresult.quot;
+                    // 4 for betas, and gamma
+                    mat_B[ 4 * index + 1 ] = divresult.quot;
                     rem = divresult.rem;
                     divresult = div( rem, pow( 10, 7 ) );
-                    mat_B[ 11 * index ] = divresult.quot;
+                    mat_B[ 4 * index ] = divresult.quot;
                     rem = divresult.rem;
                     divresult = div( rem, pow( 10, 6 ) );
-                    mat_B[ 11 * index + 2 ] = divresult.quot;
+                    mat_B[ 4 * index + 2 ] = divresult.quot;
+                    mat_B[ 4 * index + 3 ] = 1;
 
                     for( int k = 0; k < 8; ++ k ) {
                         rem = divresult.rem;
                         divresult = div( rem, pow( 5 , 7 - k ) );
-                        mat_B[ 11 * index + 3 + k ] = divresult.quot;
+                        mat_B[ 4 * index + 3 ] *= divresult.quot;
                     }
                 }
             }

@@ -27,14 +27,11 @@ extern "C" {
                 inner = -mat_alpha[ 4 * patient_index + j ];
                 for( int k = 0; k < 3; ++ k ) {
                     inner -= mat_beta[ 3 * patient_index + k ] *
-                        nb_info[ 44 * i + 11 * j + k ];
+                        nb_info[ 16 * i + 4 * j + k ];
                 }
-                for( int k = 0; k < 8; ++ k ) {
-                    inner -= vec_gamma[ patient_index ] *
-                        nb_info[ 44 * i + 11 * j + 3 + k ];
-                }
-
-               exp_sum += exp( inner );
+                inner -= vec_gamma[ patient_index ] *
+                    log( nb_info[ 16 * i + 4 * j + 3 ] );
+                exp_sum += exp( inner );
             }
             sum += log( exp_sum );
         }
