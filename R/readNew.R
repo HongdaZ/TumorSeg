@@ -30,6 +30,11 @@ readNew <- function( patient_file, start, size ) {
 
         # Remove invalid voxels
         sub_vec_index <- sub_vec_index[ sub_nonzero ]
+        # return NULL if majority of the voxels are invalid
+        if( length( sub_vec_index ) == 0 ) {
+            cat( "Too little brain cells in this area!\n" )
+            return()
+        }
         sub_mat_local <- groups_local[[ i ]][ , sub_nonzero ]
         sub_vec_local <- apply( sub_mat_local, 2, array2vec, dim = size )
         sub_modality_mat <- t( modality_mat[ sub_vec_index, ] )
