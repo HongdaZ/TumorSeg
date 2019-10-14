@@ -4,4 +4,4 @@ exportPattern("^[[:alpha:]]+")
 #importFrom(): import selected functions (including S4 generics).
 importFrom( "RNifti", "readNifti" )
 importFrom( "tcltk", "tkProgressBar", "setTkProgressBar" )
-importFrom( "arrayhelpers", "vec2array" )
+importFrom( "arrayhelpers", "vec2array", "array2vec" )

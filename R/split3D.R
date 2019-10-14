@@ -1,4 +1,4 @@
-split3D <- function( dim ) {
+split3D <- function( dim, start ) {
     l1 <- ceiling( dim[ 1 ] / 2  )
     rows_1 <- ( 1 : l1 ) * 2 - 1
     l1 <- floor( dim[ 1 ] / 2  )
@@ -12,13 +12,14 @@ split3D <- function( dim ) {
     l3 <- floor( dim[ 3 ] / 2 )
     slices_2 <- ( 1 : l3 ) * 2
     seq <- vector( "list", 8 )
-    seq[[ 1 ]] <- expand.grid( i = rows_1, j = cols_1, k = slices_1 )
-    seq[[ 2 ]] <- expand.grid( i = rows_1, j = cols_2, k = slices_1 )
-    seq[[ 3 ]] <- expand.grid( i = rows_2, j = cols_1, k = slices_1 )
-    seq[[ 4 ]] <- expand.grid( i = rows_2, j = cols_2, k = slices_1 )
-    seq[[ 5 ]] <- expand.grid( i = rows_1, j = cols_1, k = slices_2 )
-    seq[[ 6 ]] <- expand.grid( i = rows_1, j = cols_2, k = slices_2 )
-    seq[[ 7 ]] <- expand.grid( i = rows_2, j = cols_1, k = slices_2 )
-    seq[[ 8 ]] <- expand.grid( i = rows_2, j = cols_2, k = slices_2 )
+    seq[[ 1 ]] <- t( expand.grid( i = rows_1, j = cols_1, k = slices_1 ) )
+    seq[[ 2 ]] <- t( expand.grid( i = rows_1, j = cols_2, k = slices_1 ) )
+    seq[[ 3 ]] <- t( expand.grid( i = rows_2, j = cols_1, k = slices_1 ) )
+    seq[[ 4 ]] <- t( expand.grid( i = rows_2, j = cols_2, k = slices_1 ) )
+    seq[[ 5 ]] <- t( expand.grid( i = rows_1, j = cols_1, k = slices_2 ) )
+    seq[[ 6 ]] <- t( expand.grid( i = rows_1, j = cols_2, k = slices_2 ) )
+    seq[[ 7 ]] <- t( expand.grid( i = rows_2, j = cols_1, k = slices_2 ) )
+    seq[[ 8 ]] <- t( expand.grid( i = rows_2, j = cols_2, k = slices_2 ) )
+    seq <- lapply( seq, function( x ) x - 1 + start )
     return( seq )
 }
