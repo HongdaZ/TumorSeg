@@ -75,6 +75,8 @@ readNew <- function( patient_file, start, size ) {
                          ncol = dim( neighbor_index )[ 2 ] )
         new_patient[[ i ]] <- list( pred_seg = pred_seg,
                                     sub_true_seg = sub_true_seg,
+                                    count = count,
+                                    prob = prob,
                                     sub_vec_index = sub_vec_index,
                                     sub_vec_local = sub_vec_local,
                                     sub_modality_mat = sub_modality_mat,
