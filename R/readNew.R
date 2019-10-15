@@ -67,12 +67,15 @@ readNew <- function( patient_file, start, size ) {
             valid_pos[ is.na( valid_pos ) ] <- 0
             neighbor_index[ , j ] <- valid_pos
         }
+        neighbor_label <- matrix( 0, nrow = dim( neighbor_index )[ 1 ],
+                                  ncol = dim( neighbor_index )[ 2 ] )
         new_patient[[ i ]] <- list( pred_seg = pred_seg,
                                     sub_true_seg = sub_true_seg,
                                     sub_vec_index = sub_vec_index,
                                     sub_vec_local = sub_vec_local,
                                     sub_modality_mat = sub_modality_mat,
                                     neighbor_index = neighbor_index,
+                                    neighbor_label = neighbor_label,
                                     sum_cross_y = sum_cross_y,
                                     sum_y = sum_y,
                                     n_type = n_type )
