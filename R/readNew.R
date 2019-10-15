@@ -69,6 +69,10 @@ readNew <- function( patient_file, start, size ) {
         }
         neighbor_label <- matrix( 0, nrow = dim( neighbor_index )[ 1 ],
                                   ncol = dim( neighbor_index )[ 2 ] )
+        count <- matrix( 0, nrow = 4,
+                         ncol = dim( neighbor_index )[ 2 ] )
+        prob <- matrix( 0, nrow = 4,
+                         ncol = dim( neighbor_index )[ 2 ] )
         new_patient[[ i ]] <- list( pred_seg = pred_seg,
                                     sub_true_seg = sub_true_seg,
                                     sub_vec_index = sub_vec_index,
