@@ -1,14 +1,15 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <omp.h>
-
+#include "helper.h"
 extern "C" {
+
     SEXP logZ( SEXP patient, SEXP alpha,  SEXP beta, SEXP gamma, SEXP p ) {
         double *vec_alpha = REAL( alpha );
         double *vec_beta = REAL( beta );
         double *ptr_gamma = REAL( gamma );
 
-        SEXP elmt = VECTOR_ELT( patient, 3 );
+        SEXP elmt = getListElement( patient, "neighbor_info" );
         int *nb_info = INTEGER( elmt );
         SEXP dim = getAttrib( elmt, R_DimSymbol );
         int nc = INTEGER( dim )[ 1 ];
