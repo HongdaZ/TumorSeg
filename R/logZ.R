@@ -1,3 +1,3 @@
-logZ <- function( patient, alpha, beta, gamma, s, p ) {
-    .Call( "logZ", patient, alpha, beta, gamma, s, p )
+logZ <- function( patient, alpha, beta, gamma, p ) {
+    .Call( "logZ", patient, alpha, beta, gamma, p )
 }

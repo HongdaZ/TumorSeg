@@ -25,7 +25,7 @@ readNew <- function( patient_file, start, size ) {
     up_mat <- matrix( rep( size, dim( neighbor )[ 2 ] ), nrow = 3 )
     for( i in 1 : n_group ) {
         # index in whole image
-        sub_vec_index <- apply( groups[[ i ]], 2, array2vec, dim = img_dim  )
+        sub_vec_index <- vecIndex( groups[[ i ]], img_dim, 12 )
         sub_nonzero <- nonzero[ sub_vec_index ]
 
         # Remove invalid voxels
@@ -36,7 +36,8 @@ readNew <- function( patient_file, start, size ) {
             return()
         }
         sub_mat_local <- groups_local[[ i ]][ , sub_nonzero ]
-        sub_vec_local <- apply( sub_mat_local, 2, array2vec, dim = size )
+        storage.mode( size ) <- "integer"
+        sub_vec_local <- vecIndex( sub_mat_local, size, 12 )
         sub_modality_mat <- t( modality_mat[ sub_vec_index, ] )
         sub_true_seg <- true_seg_array[ sub_vec_index ]
         # normal cell as default predicted value for new image
