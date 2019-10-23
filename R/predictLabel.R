@@ -6,6 +6,7 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000 ) {
     alpha_star <- rep( 1, 4 )
     beta_star <- rep( 1, 3 )
     gamma_star <- 1
+    sd <- .1
     lambda_alpha <- rep( 1, 4 )
     lambda_beta <- rep( 1, 3 )
     lambda_gamma <- 1
@@ -28,10 +29,61 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000 ) {
         for( j in 1 : s ) {
             # update alpha's
             for( k in 1 : 4 ) {
-                prop_alpha <- alpha[ k, j ] + rnorm( 1, mean = 0, sd = .1 )
-
+                old_alpha <- alpha[ , j ]
+                new_alpha <- old_alpha
+                new_alpha[ k ] <- old_alpha[ k ] +
+                    rnorm( 1, mean = 0, sd = sd )
+                proportion <- exp( ( old_alpha[ k ] - new_alpha[ k ] ) *
+                                       ( lambda_alpha[ k ] +
+                                             old[[ j ]]$n_type[ k ] ) -
+                                       ( logZ( old[[ j ]], old_alpha,
+                                               beta[ , j ], gamma[ j ], 12 ) -
+                                             logZ( old[[ j ]], new_alpha,
+                                                   beta[ , j ],
+                                                   gamma[ j ], 12 ) ) )
+                rho <- min( 1, proportion )
+                if( rbinom( 1, 1, rho ) == 1 ) {
+                    alpha[ k, j ] <- new_alpha[ k ]
+                }
+            }
+            # update beta's
+            for( k in 1 : 3 ) {
+                old_beta <- beta[ , j ]
+                new_beta <- old_beta
+                new_beta[ k ] <- old_beta[ k ] +
+                    rnorm( 1, mean = 0, sd = sd )
+                proportion <- exp( ( old_beta[ k ] - new_beta[ k ] ) *
+                                       ( lambda_beta[ k ] +
+                                             old[[ j ]]$beta_sum[ k ] ) -
+                                       ( logZ( old[[ j ]], alpha[ , j ],
+                                               old_beta, gamma[ j ], 12 ) -
+                                             logZ( old[[ j ]], alpha[ , j ],
+                                                   new_beta, gamma[ j ],
+                                                   12 ) ) )
+                rho <- min( 1, proportion )
+                if( rbinom( 1, 1, rho ) == 1 ) {
+                    beta[ k, j ] <- new_beta[ k ]
+                }
+            }
+            # update gamma
+            old_gamma <- gamma[ j ]
+            new_gamma <- old_gamma + rnorm( 1, 0, sd )
+            proportion <- exp( ( old_gamma - new_gamma ) *
+                                   ( lambda_gamma  + old[[ j ]]$gamma_sum ) -
+                                   ( logZ( old[[ j ]], alpha[ , j ],
+                                           beta[ , j ], old_gamma, 12 ) -
+                                         logZ( old[[ j ]], alpha[ , j ],
+                                               beta[ , j ], new_gamma, 12 ) ) )
+            rho <- min( 1, proportion )
+            if( rbinom( 1, 1, rho ) == 1 ) {
+                gamma[ j ] <- new_gamma
             }
         }
+        # get beta_sum and gamma_sum
+        logZS( new, alpha_star, beta_star, gamma_star, new$beta_sum,
+               new$gamma_sum, 12 )
+        # update star's
+
     }
 
 }

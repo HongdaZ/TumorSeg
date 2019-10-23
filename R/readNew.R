@@ -21,7 +21,15 @@ readNew <- function( patient_file, start, size ) {
     groups <- split3D( size, start )
     groups_local <- split3D( size, c( 1, 1, 1 ) )
     n_group <- length( groups )
-    new_patient <- vector( "list", n_group + 1 )
+    new_patient <- vector( "list", n_group + 3 )
+    cube <- array( 1, dim = size )
+    new_patient[[ n_group + 1 ]] <- cube
+    new_patient[[ n_group + 2 ]] <- vector( "numeric", 3 )
+    new_patient[[ n_group + 3 ]] <- vector( "numeric", 1 )
+    name <- paste( "seq", 1 : n_group, sep = "" )
+    name <- c( name, "cube", "beta_sum", "gamma_sum")
+    names( new_patient ) <- name
+
     up_mat <- matrix( rep( size, dim( neighbor )[ 2 ] ), nrow = 3 )
     for( i in 1 : n_group ) {
         # index in whole image
@@ -70,6 +78,7 @@ readNew <- function( patient_file, start, size ) {
         }
         neighbor_label <- matrix( 0, nrow = dim( neighbor_index )[ 1 ],
                                   ncol = dim( neighbor_index )[ 2 ] )
+        fillNbrlabel( cube, neighbor_index, neighbor_label, 12 )
         count <- matrix( 0, nrow = 4,
                          ncol = dim( neighbor_index )[ 2 ] )
         prob <- matrix( 0, nrow = 4,
@@ -89,7 +98,5 @@ readNew <- function( patient_file, start, size ) {
 
 
     }
-    cube <- array( 1, dim = size )
-    new_patient[[ n_group + 1 ]] <- cube
     new_patient
 }
