@@ -26,6 +26,8 @@ readImage <- function( patient_file ) {
     sum_cross_y <- vector( "list", len_type )
     sum_y <- vector( "list", len_type )
     n_type <- tabulate( seg_valid, nbins = len_type )
+    beta_sum <- vector( "numeric", 3 )
+    gamma_sum <- vector( "numeric", 1 )
     for( i in 1 : len_type ) {
         index <- seg_valid == i
         y <- modality_mat[ index, ]
@@ -85,8 +87,17 @@ readImage <- function( patient_file ) {
             type_count2 <- type_count
             type_count2[ j, ] <- T
             res <- res + sum( type_count2 * five_base )
-
             modality_mat[ j, i ] <- res
+            # add information for alpha, beta
+            if( seg_valid[ i ] == j ) {
+                beta_sum[ 1 ] <- beta_sum[ 1 ] + sum( unequal_label[ 1 : 6 ],
+                                                      na.rm = T )
+                beta_sum[ 2 ] <- beta_sum[ 2 ] + sum( unequal_label[ 7 : 18 ],
+                                                      na.rm = T )
+                beta_sum[ 3 ] <- beta_sum[ 3 ] +
+                    sum( unequal_label[ 19 : 26 ], na.rm = T )
+                gamma_sum <- gamma_sum + sum( log( colSums( type_count2 ) ) )
+            }
         }
         # if( i > ( n_step * step ) ) {
         #     info <- sprintf( "Analyzing data: %d%%",
@@ -102,5 +113,7 @@ readImage <- function( patient_file ) {
     list( sum_cross_y = sum_cross_y,
           sum_y = sum_y,
           n_type = n_type,
-          neighbor_info = modality_mat )
+          neighbor_info = modality_mat,
+          beta_sum = beta_sum,
+          gamma_sum = gamma_sum )
 }
