@@ -49,7 +49,8 @@ readNew <- function( patient_file, start, size ) {
         sub_modality_mat <- t( modality_mat[ sub_vec_index, ] )
         sub_true_seg <- true_seg_array[ sub_vec_index ]
         # normal cell as default predicted value for new image
-        pred_seg <- rep( 1, length( sub_vec_index ) )
+        #pred_seg <- rep( 1, length( sub_vec_index ) )
+        pred_seg <- sub_true_seg
 
         # sum of cross products of y's and sum of y's
         len_type <- 4

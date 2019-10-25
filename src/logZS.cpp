@@ -84,11 +84,15 @@ extern "C" {
                 sum += - log( sum_exp );
             }
             for( int j = 0; j < 3; ++ j ) {
-                b_sum[ j ] += sum_b[ j ];
+                res_b[ j ] += sum_b[ j ];
             }
-            g_sum[ 0 ] += sum_g;
+            res_g += sum_g;
             res += sum;
         }
+        for( int i = 0; i < 3; ++ i ) {
+            b_sum[ i ] = res_b[ i ];
+        }
+        g_sum[ 0 ] = res_g;
         SEXP result = PROTECT( allocVector( REALSXP, 1 ) );
         double *res_ptr = REAL( result );
         res_ptr[ 0 ] = res;
