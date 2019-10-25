@@ -23,6 +23,7 @@ readNew <- function( patient_file, start, size ) {
     n_group <- length( groups )
     new_patient <- vector( "list", n_group + 3 )
     cube <- array( 1, dim = size )
+    cube[ !nonzero ] <- 0
     new_patient[[ n_group + 1 ]] <- cube
     new_patient[[ n_group + 2 ]] <- vector( "numeric", 3 )
     new_patient[[ n_group + 3 ]] <- vector( "numeric", 1 )
