@@ -13,12 +13,12 @@ sumPatient <- function( patient ) {
     for( i in 1 : n ) {
         for( j in 1 : 4 ) {
             sum_cross_y[[ j ]] <- sum_cross_y[[ j ]] +
-                patient[[ i ]][[ 1 ]][[ j ]]
+                patient[[ i ]]$sum_cross_y[[ j ]]
             sum_y[[ j ]] <-sum_y[[ j ]] +
-                patient[[ i ]][[ 2 ]][[ j ]]
+                patient[[ i ]]$sum_y[[ j ]]
         }
         n_type <- n_type +
-            patient[[ i ]][[ 3 ]]
+            patient[[ i ]]$n_type
     }
     list( sum_cross_y = sum_cross_y,
           sum_y = sum_y,

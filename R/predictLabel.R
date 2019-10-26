@@ -16,7 +16,8 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000, core = 12 ) {
     lambda_gamma <- 1
     mu <- vector( "list", 4 )
     sigma <- vector( "list", 4 )
-    initial <- sumPatient( old )
+    sum_old <- sumPatient( old )
+    initial <- sum_old
     for( i in 1 : 4 ) {
         mu[[ i ]] <- initial$sum_y[[ i ]] / initial$n_type[ i ]
         sigma[[ i ]] <- 1 / ( initial$n_type[ i ] - 1 ) *
@@ -86,7 +87,7 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000, core = 12 ) {
         # get beta_sum and gamma_sum
         logZS( new, alpha_star, beta_star, gamma_star, new$beta_sum,
                new$gamma_sum, core )
-        new_n_type <- vector( "numeric", 4 )
+        sum_new <- sumPatient( new[ 1 : 8 ] )
         for( k in 1 : 8 ) {
             new_n_type <- new_n_type + new[[ k ]]$n_type
         }
