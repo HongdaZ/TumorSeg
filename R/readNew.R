@@ -22,11 +22,8 @@ readNew <- function( patient_file, start, size ) {
     groups_local <- split3D( size, c( 1, 1, 1 ) )
     n_group <- length( groups )
     new_patient <- vector( "list", n_group + 3 )
-    cube <- array( 1, dim = size )
-    cube[ !nonzero ] <- 0
-    new_patient[[ n_group + 1 ]] <- cube
-    new_patient[[ n_group + 2 ]] <- vector( "numeric", 3 )
-    new_patient[[ n_group + 3 ]] <- vector( "numeric", 1 )
+    cube <- array( 0, dim = size )
+
     name <- paste( "seq", 1 : n_group, sep = "" )
     name <- c( name, "cube", "beta_sum", "gamma_sum")
     names( new_patient ) <- name
@@ -47,6 +44,7 @@ readNew <- function( patient_file, start, size ) {
         sub_mat_local <- groups_local[[ i ]][ , sub_nonzero ]
         storage.mode( size ) <- "integer"
         sub_vec_local <- vecIndex( sub_mat_local, size, 12 )
+        cube[ sub_vec_local ] <- 1
         sub_modality_mat <- t( modality_mat[ sub_vec_index, ] )
         sub_true_seg <- true_seg_array[ sub_vec_index ]
         # normal cell as default predicted value for new image
@@ -98,5 +96,8 @@ readNew <- function( patient_file, start, size ) {
 
 
     }
+    new_patient[[ n_group + 1 ]] <- cube
+    new_patient[[ n_group + 2 ]] <- vector( "numeric", 3 )
+    new_patient[[ n_group + 3 ]] <- vector( "numeric", 1 )
     new_patient
 }
