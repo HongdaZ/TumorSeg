@@ -71,7 +71,6 @@ readNew <- function( patient_file, start, size, core = 12 ) {
                 size[ 1 ] * ( neighbor_mat_local[ 2, ] - 1 ) +
                 size[ 1 ] * size[ 2 ] * ( neighbor_mat_local[ 3, ] - 1 )
             valid_pos[ is.na( valid_pos ) ] <- 0
-            valid_pos[ is.na( valid_pos ) ] <- 0
             neighbor_index[ , j ] <- valid_pos
         }
         neighbor_label <- matrix( 0, nrow = dim( neighbor_index )[ 1 ],
