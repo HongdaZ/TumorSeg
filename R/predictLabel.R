@@ -230,7 +230,8 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000, core = 12 ) {
             n_type <- tabulate( new[[ k ]]$pred_seg, nbins = len_type )
             for( l in 1 : len_type ) {
                 index <- new[[ k ]]$pred_seg == l
-                y <- new[[ k ]]$sub_modality_mat[ , index ]
+                y <- matrix( new[[ k ]]$sub_modality_mat[ , index ],
+                             nrow = len_type )
                 sum_cross_y[[ l ]] <- tcrossprod( y )
                 sum_y[[ l ]] <- rowSums( y )
             }

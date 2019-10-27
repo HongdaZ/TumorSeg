@@ -56,7 +56,7 @@ readNew <- function( patient_file, start, size, core = 12 ) {
         n_type <- tabulate( pred_seg, nbins = len_type )
         for( j in 1 : len_type ) {
             index <- pred_seg == j
-            y <- sub_modality_mat[ , index ]
+            y <- matrix( sub_modality_mat[ , index ], nrow = len_type )
             sum_cross_y[[ j ]] <- tcrossprod( y )
             sum_y[[ j ]] <- rowSums( y )
         }
