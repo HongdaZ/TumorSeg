@@ -1,4 +1,4 @@
-readNew <- function( patient_file, start, size ) {
+readNew <- function( patient_file, start, size, core = 12 ) {
     type <- c( 0, 1, 2, 4 )
     true_seg_array <- readNifti( patient_file[[ 2 ]] )
     # change label to 1 ~ # of type
@@ -31,7 +31,7 @@ readNew <- function( patient_file, start, size ) {
     up_mat <- matrix( rep( size, dim( neighbor )[ 2 ] ), nrow = 3 )
     for( i in 1 : n_group ) {
         # index in whole image
-        sub_vec_index <- vecIndex( groups[[ i ]], img_dim, 12 )
+        sub_vec_index <- vecIndex( groups[[ i ]], img_dim, core )
         sub_nonzero <- nonzero[ sub_vec_index ]
 
         # Remove invalid voxels
@@ -43,7 +43,7 @@ readNew <- function( patient_file, start, size ) {
         }
         sub_mat_local <- groups_local[[ i ]][ , sub_nonzero ]
         storage.mode( size ) <- "integer"
-        sub_vec_local <- vecIndex( sub_mat_local, size, 12 )
+        sub_vec_local <- vecIndex( sub_mat_local, size, core )
         cube[ sub_vec_local ] <- 1
         sub_modality_mat <- t( modality_mat[ sub_vec_index, ] )
         sub_true_seg <- true_seg_array[ sub_vec_index ]
@@ -76,7 +76,6 @@ readNew <- function( patient_file, start, size ) {
         }
         neighbor_label <- matrix( 0, nrow = dim( neighbor_index )[ 1 ],
                                   ncol = dim( neighbor_index )[ 2 ] )
-        fillNbrlabel( cube, neighbor_index, neighbor_label, 12 )
         count <- matrix( 0, nrow = 4,
                          ncol = dim( neighbor_index )[ 2 ] )
         prob <- matrix( 0, nrow = 4,
@@ -95,6 +94,10 @@ readNew <- function( patient_file, start, size ) {
                                     n_type = n_type )
 
 
+    }
+    for( i in 1 : 8 ) {
+        fillNbrlabel( cube, new_patient[[ i ]]$neighbor_index,
+                      new_patient[[ i ]]$neighbor_label, core )
     }
     new_patient[[ n_group + 1 ]] <- cube
     new_patient[[ n_group + 2 ]] <- vector( "numeric", 3 )
