@@ -249,7 +249,7 @@ predictLabel <- function( old, new, burnin = 1000, n = 10000, core = 12 ) {
                           new[[ k ]]$neighbor_label, core )
         }
     }
-    list( old = old, new = new, alpha_star_trace = alpha_star_trace,
+    list( new = new, alpha_star_trace = alpha_star_trace,
           beta_star_trace = beta_star_trace,
           gamma_star_trace = gamma_star_trace )
 }
